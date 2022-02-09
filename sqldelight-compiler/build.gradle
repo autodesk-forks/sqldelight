@@ -11,6 +11,10 @@ test {
   }
 }
 
+grammarKit {
+  grammarKitRelease = "2020.1"
+}
+
 sourceSets {
   main.java.srcDir "gen"
 }

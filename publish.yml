@@ -1,0 +1,66 @@
+# This pipeline exists in order to publish sqldelight for ios and android.
+# Builds for this should be queued manually.
+# New artifacts are placed in artifactory with the base version of the libraries with the build
+# number appended to the end.
+
+variables:
+  - group: artifactory-auth
+
+jobs:
+
+  ########################## LINUX ########################
+  - job: PublishLinux
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+
+      - bash: sudo apt install build-essential
+        displayName: 'Install Linux build dependencies'
+
+      - task: Gradle@2
+        inputs:
+          workingDirectory: 'sqldelight'
+          gradleWrapperFile: 'sqldelight/gradlew'
+          options: '--no-daemon'
+          tasks: 'assemble'
+        displayName: 'Assemble SqlDelight (Linux)'
+        env:
+          ARTIFACTORY_USER: "$(ARTIFACTORY_USER)"
+          ARTIFACTORY_PASSWORD: "$(ARTIFACTORY_PASSWORD)"
+          ARTIFACTORY_PUBLISH_URL: "$(ARTIFACTORY_PUBLISH_URL)"
+          PG_BUILD_NUMBER: "$(Build.BuildNumber)"
+          CI: "true"
+
+      - task: Gradle@2
+        inputs:
+          workingDirectory: 'sqldelight'
+          gradleWrapperFile: 'sqldelight/gradlew'
+          options: '--no-daemon'
+          tasks: 'publishAllPublicationsToMavenRepository'
+        displayName: 'Publish SqlDelight (Linux)'
+        env:
+          ARTIFACTORY_USER: "$(ARTIFACTORY_USER)"
+          ARTIFACTORY_PASSWORD: "$(ARTIFACTORY_PASSWORD)"
+          ARTIFACTORY_PUBLISH_URL: "$(ARTIFACTORY_PUBLISH_URL)"
+          PG_BUILD_NUMBER: "$(Build.BuildNumber)"
+          CI: "true"
+
+  ########################## MAC ########################
+  - job: PublishMac
+    pool:
+      vmImage: 'macos-latest'
+    steps:
+
+      - task: Gradle@2
+        inputs:
+          workingDirectory: 'sqldelight'
+          gradleWrapperFile: 'sqldelight/gradlew'
+          options: '--no-daemon'
+          tasks: 'drivers:native-driver:publishIosX64PublicationToMavenRepository drivers:native-driver:publishIosArm64PublicationToMavenRepository runtime:publishIosArm64PublicationToMavenRepository runtime:publishIosX64PublicationToMavenRepository'
+        displayName: 'Publish SqlDelight (Mac)'
+        env:
+          ARTIFACTORY_USER: "$(ARTIFACTORY_USER)"
+          ARTIFACTORY_PASSWORD: "$(ARTIFACTORY_PASSWORD)"
+          ARTIFACTORY_PUBLISH_URL: "$(ARTIFACTORY_PUBLISH_URL)"
+          PG_BUILD_NUMBER: "$(Build.BuildNumber)"
+          BUILD_HOST: "macos"
