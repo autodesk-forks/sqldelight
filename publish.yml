@@ -19,7 +19,6 @@ jobs:
 
       - task: Gradle@2
         inputs:
-          workingDirectory: 'sqldelight'
           gradleWrapperFile: '/gradlew'
           options: '--no-daemon'
           tasks: 'assemble'
@@ -33,7 +32,6 @@ jobs:
 
       - task: Gradle@2
         inputs:
-          workingDirectory: 'sqldelight'
           gradleWrapperFile: '/gradlew'
           options: '--no-daemon'
           tasks: 'publishAllPublicationsToMavenRepository'
@@ -53,7 +51,6 @@ jobs:
 
       - task: Gradle@2
         inputs:
-          workingDirectory: 'sqldelight'
           gradleWrapperFile: '/gradlew'
           options: '--no-daemon'
           tasks: 'drivers:native-driver:publishIosX64PublicationToMavenRepository drivers:native-driver:publishIosArm64PublicationToMavenRepository runtime:publishIosArm64PublicationToMavenRepository runtime:publishIosX64PublicationToMavenRepository'
