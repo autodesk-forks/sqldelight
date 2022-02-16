@@ -19,7 +19,6 @@ jobs:
 
       - task: Gradle@2
         inputs:
-          gradleWrapperFile: '/gradlew'
           options: '--no-daemon'
           tasks: 'assemble'
         displayName: 'Assemble SqlDelight (Linux)'
@@ -32,7 +31,6 @@ jobs:
 
       - task: Gradle@2
         inputs:
-          gradleWrapperFile: '/gradlew'
           options: '--no-daemon'
           tasks: 'publishAllPublicationsToMavenRepository'
         displayName: 'Publish SqlDelight (Linux)'
@@ -51,7 +49,6 @@ jobs:
 
       - task: Gradle@2
         inputs:
-          gradleWrapperFile: '/gradlew'
           options: '--no-daemon'
           tasks: 'drivers:native-driver:publishIosX64PublicationToMavenRepository drivers:native-driver:publishIosArm64PublicationToMavenRepository runtime:publishIosArm64PublicationToMavenRepository runtime:publishIosX64PublicationToMavenRepository'
         displayName: 'Publish SqlDelight (Mac)'
