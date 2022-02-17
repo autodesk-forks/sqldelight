@@ -20,7 +20,7 @@ import kotlin.native.concurrent.ensureNeverFrozen
 sealed class ConnectionWrapper : SqlDriver {
   internal abstract fun <R> accessConnection(
     readOnly: Boolean,
-    block: ThreadConnection.() -> R
+    block: Borrowed<ThreadConnection>.(isOwned: Boolean) -> R
   ): R
 
   final override fun execute(
@@ -29,21 +29,25 @@ sealed class ConnectionWrapper : SqlDriver {
     parameters: Int,
     binders: (SqlPreparedStatement.() -> Unit)?
   ) {
-    accessConnection(false) {
-      val statement = useStatement(identifier, sql)
+    accessConnection(false) { isOwned ->
+      val statement = value.useStatement(identifier, sql)
       if (binders != null) {
         try {
           SqliterStatement(statement).binders()
         } catch (t: Throwable) {
           statement.resetStatement()
-          clearIfNeeded(identifier, statement)
+          value.clearIfNeeded(identifier, statement)
+          if (isOwned) { release() }
           throw t
         }
       }
 
       statement.execute()
       statement.resetStatement()
-      clearIfNeeded(identifier, statement)
+      value.clearIfNeeded(identifier, statement)
+      if (isOwned) {
+        release()
+      }
     }
   }
 
@@ -53,15 +57,18 @@ sealed class ConnectionWrapper : SqlDriver {
     parameters: Int,
     binders: (SqlPreparedStatement.() -> Unit)?
   ): SqlCursor {
-    return accessConnection(true) {
-      val statement = getStatement(identifier, sql)
+    return accessConnection(true) { isOwned ->
+      val statement = value.getStatement(identifier, sql)
 
       if (binders != null) {
         try {
           SqliterStatement(statement).binders()
         } catch (t: Throwable) {
           statement.resetStatement()
-          safePut(identifier, statement)
+          value.safePut(identifier, statement)
+          if (isOwned) {
+            release()
+          }
           throw t
         }
       }
@@ -70,9 +77,12 @@ sealed class ConnectionWrapper : SqlDriver {
 
       SqliterSqlCursor(cursor) {
         statement.resetStatement()
-        if (closed)
+        if (value.closed)
           statement.finalizeStatement()
-        safePut(identifier, statement)
+        value.safePut(identifier, statement)
+        if (isOwned) {
+          release()
+        }
       }
     }
   }
@@ -197,23 +207,23 @@ class NativeSqliteDriver(
    */
   override fun <R> accessConnection(
     readOnly: Boolean,
-    block: ThreadConnection.() -> R
+    block: Borrowed<ThreadConnection>.(isOwned: Boolean) -> R
   ): R {
     val mine = borrowedConnectionThread.get()
 
     return if (readOnly) {
       // Code intends to read, which doesn't need to block
       if (mine != null) {
-        mine.value.block()
+        mine.block(false)
       } else {
-        readerPool.access(block)
+        readerPool.borrowEntry().block(true)
       }
     } else {
       // Code intends to write, for which we're managing locks in code
       if (mine != null) {
-        mine.value.block()
+        mine.block(false)
       } else {
-        transactionPool.access(block)
+        transactionPool.borrowEntry().block(true)
       }
     }
   }
@@ -252,17 +262,22 @@ internal class SqliterWrappedConnection(
   private val threadConnection: ThreadConnection
 ) : ConnectionWrapper(),
   SqlDriver {
+
   override fun currentTransaction(): Transacter.Transaction? = threadConnection.transaction.value
 
   override fun newTransaction(): Transacter.Transaction = threadConnection.newTransaction()
 
   override fun <R> accessConnection(
     readOnly: Boolean,
-    block: ThreadConnection.() -> R
-  ): R = threadConnection.block()
+    block: Borrowed<ThreadConnection>.(isOwned: Boolean) -> R
+  ): R = BorrowedWrapper(threadConnection).block(false)
 
   override fun close() {
     threadConnection.cleanUp()
+  }
+
+  internal class BorrowedWrapper(override val value: ThreadConnection): Borrowed<ThreadConnection> {
+    override fun release() { }
   }
 }
 
