@@ -17,6 +17,9 @@ jobs:
       - bash: sudo apt install build-essential openjdk-17-jdk openjdk-17-jre
         displayName: 'Install Linux build dependencies'
 
+      - bash: ./gradlew -version
+        displayName: 'Print the versions'
+
       - task: Gradle@2
         inputs:
           options: '--no-daemon'
