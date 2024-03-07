@@ -4,7 +4,7 @@
 # number appended to the end.
 
 variables:
-  - group: artifactory-auth
+  - group: another-art-auth
 
 jobs:
 
