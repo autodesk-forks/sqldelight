@@ -6,7 +6,7 @@ package com.plangrid
 env.PROJECT_NAME = 'sqldelight'
 env.timeoutAmount = 90
 
-node('aws-centos') {
+node('aws-centos-2xlarge') {
   withCredentials([
     [
       $class          : 'UsernamePasswordMultiBinding',
