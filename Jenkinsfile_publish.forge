@@ -48,13 +48,13 @@ node("aws-centos") {
     }
 
     containerExec("git config --global --add safe.directory /sqldelight")
-    containerExec("git rev-parse --short HEAD")
 
-    AcsStage("Download Jar") {
-      containerExec("mkdir -p ~/.gradle && echo internalUsername:$ARTIFACTORY_USER >> ~/.gradle/gradle.properties")
-      containerExec("echo internalPassword:$ARTIFACTORY_PASSWORD >> ~/.gradle/gradle.properties")
-      containerExec("echo internalUrl:$ARTIFACTORY_URL >> ~/.gradle/gradle.properties")
+    containerExec("mkdir -p ~/.gradle")
+    containerExec("echo internalUsername:$ARTIFACTORY_USER >> ~/.gradle/gradle.properties")
+    containerExec("echo internalPassword:$ARTIFACTORY_PASSWORD >> ~/.gradle/gradle.properties")
+    containerExec("echo internalUrl:$ARTIFACTORY_URL >> ~/.gradle/gradle.properties")
 
+    AcsStage("Publish sqldelight-gradle-plugin") {
       containerExec("./gradlew --no-daemon sqldelight-gradle-plugin:publishAllPublicationsToInternalRepository")
     }
   }
