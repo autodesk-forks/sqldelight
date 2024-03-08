@@ -48,9 +48,9 @@ node("aws-centos") {
     }
 
     AcsStage("Download Jar") {
-      containerExec("mkdir ~/.gradle && echo internalUsername:$ARTIFACTORY_USER >> ~/.gradle/gradle.properties")
-      containerExec("mkdir ~/.gradle && echo internalPassword:$ARTIFACTORY_PASSWORD >> ~/.gradle/gradle.properties")
-      containerExec("mkdir ~/.gradle && echo internalUrl:$ARTIFACTORY_URL >> ~/.gradle/gradle.properties")
+      containerExec("mkdir -p ~/.gradle && echo internalUsername:$ARTIFACTORY_USER >> ~/.gradle/gradle.properties")
+      containerExec("echo internalPassword:$ARTIFACTORY_PASSWORD >> ~/.gradle/gradle.properties")
+      containerExec("echo internalUrl:$ARTIFACTORY_URL >> ~/.gradle/gradle.properties")
 
       containerExec("./gradlew --no-daemon sqldelight-gradle-plugin:publishAllPublicationsToInternalRepository")
     }
