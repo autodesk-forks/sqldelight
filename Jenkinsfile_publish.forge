@@ -6,6 +6,8 @@ package com.plangrid
 env.PROJECT_NAME = 'sqldelight'
 env.timeoutAmount = 90
 
+ARTIFACTORY_URL = "https://plangrid.jfrog.io/plangrid/libs-release-local/"
+
 node("aws-centos") {
   withCredentials([
     [
@@ -34,7 +36,7 @@ node("aws-centos") {
                   -e BUILD_USER \
                   -e ARTIFACTORY_USER \
                   -e ARTIFACTORY_PASSWORD \
-                  -e ARTIFACTORY_URL=https://plangrid.jfrog.io/plangrid/libs-release-local/ \
+                  -e ARTIFACTORY_URL=$ARTIFACTORY_URL \
                   -itd \
                   --network host \
                   -v ${CURRENT_DIR}:/sqldelight \
@@ -47,6 +49,10 @@ node("aws-centos") {
     }
 
     AcsStage("Download Jar") {
+      containerExec("mkdir ~/.gradle && echo internalUsername:$ARTIFACTORY_USER >> ~/.gradle/gradle.properties")
+      containerExec("mkdir ~/.gradle && echo internalPassword:$ARTIFACTORY_PASSWORD >> ~/.gradle/gradle.properties")
+      containerExec("mkdir ~/.gradle && echo internalUrl:$ARTIFACTORY_URL >> ~/.gradle/gradle.properties")
+
       containerExec("./gradlew --no-daemon sqldelight-gradle-plugin:publishAllPublicationsToInternalRepository")
     }
   }
