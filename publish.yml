@@ -17,8 +17,8 @@ jobs:
       - bash: sudo apt install build-essential
         displayName: 'Install Linux build dependencies'
 
-      - bash: update-java-alternatives --list
-        displayName: 'List installed JDKs'
+      - bash: sudo update-java-alternatives --set /usr/lib/jvm/temurin-17-jdk-amd64
+        displayName: 'Set JDK 17 as default'
 
       - bash: ./gradlew -version
         displayName: 'Print the versions'
