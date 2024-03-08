@@ -23,6 +23,10 @@ jobs:
       - bash: export JAVA_HOME=/usr/lib/jvm/temurin-17-jdk-amd64 && source /etc/environment && java -version
         displayName: 'Set JAVA_HOME'
 
+      - bash: echo internalUsername:$ARTIFACTORY_USER >> ~/.gradle/gradle.properties
+      - bash: echo internalPassword:$ARTIFACTORY_PASSWORD >> ~/.gradle/gradle.properties
+      - bash: echo internalUrl:$ARTIFACTORY_PUBLISH_URL >> ~/.gradle/gradle.properties
+
       - bash: java -version && echo $JAVA_HOME
         displayName: 'Print Java version'
         env:
@@ -49,7 +53,7 @@ jobs:
       - task: Gradle@2
         inputs:
           options: '--no-daemon'
-          tasks: 'publishAllPublicationsToInternalRepository -PinternalUsername=$(ARTIFACTORY_USER) -PinternalPassword=$(ARTIFACTORY_PASSWORD) -PinternalUrl="https://plangrid.jfrog.io/plangrid/libs-release-local/"'
+          tasks: 'sqldelight-gradle-plugin:publishAllPublicationsToInternalRepository'
         displayName: 'Publish SqlDelight (Linux)'
         env:
           JAVA_HOME: "/usr/lib/jvm/temurin-17-jdk-amd64"
