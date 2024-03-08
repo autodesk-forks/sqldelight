@@ -42,7 +42,7 @@ node("aws-centos") {
       ).trim()
 
       containerExec = { cmd ->
-        sh "docker exec ${DOCKER_ID} bash -c '${command}'"
+        sh "docker exec ${DOCKER_ID} bash -c '${cmd}'"
       }
     }
 
