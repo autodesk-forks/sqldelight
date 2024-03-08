@@ -6,7 +6,7 @@ package com.plangrid
 env.PROJECT_NAME = 'sqldelight'
 env.timeoutAmount = 90
 
-ARTIFACTORY_URL = "https://plangrid.jfrog.io/plangrid/libs-release-local/"
+ARTIFACTORY_URL = "https://plangrid.jfrog.io/plangrid/libs-release/"
 
 node("aws-centos") {
   withCredentials([
