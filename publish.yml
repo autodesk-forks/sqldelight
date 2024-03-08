@@ -25,8 +25,10 @@ jobs:
 
       - bash: java -version && echo $JAVA_HOME
         displayName: 'Print Java version'
+        env:
+          JAVA_HOME: "/usr/lib/jvm/temurin-17-jdk-amd64"
 
-      - bash: ./gradlew -version -Dorg.gradle.java.home=$JAVA_HOME
+      - bash: ./gradlew -Dorg.gradle.java.home=$JAVA_HOME -version
         displayName: 'Print the versions'
 
       - task: Gradle@2
@@ -35,6 +37,7 @@ jobs:
           tasks: 'assemble'
         displayName: 'Assemble SqlDelight (Linux)'
         env:
+          JAVA_HOME: "/usr/lib/jvm/temurin-17-jdk-amd64"
           internalUsername: "$(ARTIFACTORY_USER)"
           internalPassword: "$(ARTIFACTORY_PASSWORD)"
           internalUrl: "$(ARTIFACTORY_PUBLISH_URL)"
@@ -47,6 +50,7 @@ jobs:
           tasks: 'sqldelight-gradle-plugin:publishAllPublicationsToInternalRepository'
         displayName: 'Publish SqlDelight (Linux)'
         env:
+          JAVA_HOME: "/usr/lib/jvm/temurin-17-jdk-amd64"
           internalUsername: "$(ARTIFACTORY_USER)"
           internalPassword: "$(ARTIFACTORY_PASSWORD)"
           internalUrl: "$(ARTIFACTORY_PUBLISH_URL)"
