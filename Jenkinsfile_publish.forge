@@ -42,12 +42,12 @@ node("aws-centos") {
       ).trim()
 
       containerExec = { cmd ->
-        sh "docker exec ${docker_id} bash -c '${command}'"
+        sh "docker exec ${DOCKER_ID} bash -c '${command}'"
       }
     }
 
     AcsStage("Download Jar") {
-      containerExec(DOCKER_ID, "./gradlew --no-daemon sqldelight-gradle-plugin:publishAllPublicationsToInternalRepository")
+      containerExec("./gradlew --no-daemon sqldelight-gradle-plugin:publishAllPublicationsToInternalRepository")
     }
   }
 }
