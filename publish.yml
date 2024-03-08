@@ -48,19 +48,19 @@ jobs:
           CI: "true"
 
   ########################## MAC ########################
-  - job: PublishMac
-    pool:
-      vmImage: 'macos-latest'
-    steps:
-
-      - task: Gradle@2
-        inputs:
-          options: '--no-daemon'
-          tasks: 'drivers:native-driver:publishIosX64PublicationToMavenRepository drivers:native-driver:publishIosArm64PublicationToMavenRepository runtime:publishIosArm64PublicationToMavenRepository runtime:publishIosX64PublicationToMavenRepository'
-        displayName: 'Publish SqlDelight (Mac)'
-        env:
-          internalUsername: "$(ARTIFACTORY_USER)"
-          internalPassword: "$(ARTIFACTORY_PASSWORD)"
-          internalUrl: "$(ARTIFACTORY_PUBLISH_URL)"
-          PG_BUILD_NUMBER: "$(Build.BuildNumber)"
-          BUILD_HOST: "macos"
+#  - job: PublishMac
+#    pool:
+#      vmImage: 'macos-latest'
+#    steps:
+#
+#      - task: Gradle@2
+#        inputs:
+#          options: '--no-daemon'
+#          tasks: 'drivers:native-driver:publishIosX64PublicationToMavenRepository drivers:native-driver:publishIosArm64PublicationToMavenRepository runtime:publishIosArm64PublicationToMavenRepository runtime:publishIosX64PublicationToMavenRepository'
+#        displayName: 'Publish SqlDelight (Mac)'
+#        env:
+#          internalUsername: "$(ARTIFACTORY_USER)"
+#          internalPassword: "$(ARTIFACTORY_PASSWORD)"
+#          internalUrl: "$(ARTIFACTORY_PUBLISH_URL)"
+#          PG_BUILD_NUMBER: "$(Build.BuildNumber)"
+#          BUILD_HOST: "macos"
