@@ -8,6 +8,7 @@ FROM azul/zulu-openjdk:17.0.4.1-17.36.17
 
 RUN apt-get update && apt-get install -y \
     curl \
+    git \
     build-essential
 
 RUN mkdir sqldelight
