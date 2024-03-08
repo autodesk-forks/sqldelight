@@ -35,7 +35,7 @@ jobs:
       - task: Gradle@2
         inputs:
           options: '--no-daemon'
-          tasks: 'publishAllPublicationsToInternalRepository'
+          tasks: 'publishSqlDelightPluginMarkerMavenPublicationToInternalRepository'
         displayName: 'Publish SqlDelight (Linux)'
         env:
           internalUsername: "$(ARTIFACTORY_USER)"
