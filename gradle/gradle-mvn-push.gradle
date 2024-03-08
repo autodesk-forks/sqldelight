@@ -13,6 +13,7 @@ publishing {
          * internalPassword=YOUR_PASSWORD
          */
         maven {
+          println("LX+++ url: ${providers.gradleProperty("internalUrl")} username: ${providers.gradleProperty("internalUsername")}")
           name = "internal"
           url = providers.gradleProperty("internalUrl")
           credentials(PasswordCredentials)

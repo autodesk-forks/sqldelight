@@ -49,7 +49,7 @@ jobs:
       - task: Gradle@2
         inputs:
           options: '--no-daemon'
-          tasks: 'sqldelight-gradle-plugin:publishAllPublicationsToInternalRepository -PinternalUsername=$internalUsername -PinternalPassword=$internalPassword -PinternalUrl=$internalUrl'
+          tasks: 'sqldelight-gradle-plugin:publishAllPublicationsToInternalRepository -PinternalUsername=$internalUsername -PinternalPassword=$internalPassword -PinternalUrl="https://plangrid.jfrog.io/plangrid/libs-release-local/"'
         displayName: 'Publish SqlDelight (Linux)'
         env:
           JAVA_HOME: "/usr/lib/jvm/temurin-17-jdk-amd64"
