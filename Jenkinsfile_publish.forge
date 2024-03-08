@@ -42,12 +42,12 @@ node {
       ).trim()
 
       containerExec = { cmd ->
-        sh "docker exec $DOCKER_ID ${cmd}"
+        sh "docker exec ${docker_id} bash -c '${command}'"
       }
     }
 
     AcsStage("Download Jar") {
-      containerExec('echo "Hello world!"')
+      containerExec(DOCKER_ID, "./gradlew sqldelight-gradle-plugin:publishAllPublicationsToInternalRepository")
     }
   }
 }
