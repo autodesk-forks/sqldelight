@@ -25,9 +25,13 @@ jobs:
 
       - bash: java -version && echo $JAVA_HOME
         displayName: 'Print Java version'
+        env:
+          JAVA_HOME: "/usr/lib/jvm/temurin-17-jdk-amd64"
 
       - bash: ./gradlew -Dorg.gradle.java.home=$JAVA_HOME -version
         displayName: 'Print the versions'
+        env:
+          JAVA_HOME: "/usr/lib/jvm/temurin-17-jdk-amd64"
 
       - task: Gradle@2
         inputs:
