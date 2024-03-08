@@ -48,7 +48,6 @@ node("aws-centos") {
     }
 
     containerExec("git config --global --add safe.directory /sqldelight")
-
     containerExec("mkdir -p ~/.gradle")
     containerExec("echo internalUsername:$ARTIFACTORY_USER >> ~/.gradle/gradle.properties")
     containerExec("echo internalPassword:$ARTIFACTORY_PASSWORD >> ~/.gradle/gradle.properties")
