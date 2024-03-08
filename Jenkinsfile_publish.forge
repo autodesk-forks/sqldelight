@@ -23,6 +23,9 @@ node('aws-centos-2xlarge') {
     CURRENT_DIR = sh(returnStdout: true, script: "pwd").trim()
 
     AcsStage('Run Docker') {
+      DOCKER_ID_NEW = sh(returnStdout: true, script: "docker build .")
+      sh "echo $DOCKER_ID_NEW"
+
       DOCKER_ID = sh(returnStdout: true, script: "docker build \
                   -e BUILD_NUMBER \
                   -e BRANCH_NAME \
@@ -31,7 +34,7 @@ node('aws-centos-2xlarge') {
                   -e BUILD_USER \
                   -e ARTIFACTORY_USER \
                   -e ARTIFACTORY_PASSWORD \
-                  -e ARTIFACTORY_URL='https://plangrid.jfrog.io/plangrid/libs-release-local/' \
+                  -e ARTIFACTORY_URL=https://plangrid.jfrog.io/plangrid/libs-release-local/ \
                   -itd \
                   --network host \
                   -v ${CURRENT_DIR}:/sqldelight \
