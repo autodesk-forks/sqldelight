@@ -14,10 +14,10 @@ jobs:
       vmImage: 'ubuntu-latest'
     steps:
 
-      - bash: sudo apt install build-essential openjdk-17-jdk openjdk-17-jre
+      - bash: sudo apt install build-essential
         displayName: 'Install Linux build dependencies'
 
-      - bash: ls /usr/lib/jvm
+      - bash: export JAVA_HOME=/usr/lib/jvm/temurin-17-jdk-amd64 && java -version
         displayName: 'List installed JDKs'
 
       - bash: ./gradlew -version
