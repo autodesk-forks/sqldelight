@@ -15,7 +15,7 @@ publishing {
         maven {
           println("LX+++ url: ${providers.gradleProperty("internalUrl").getOrNull()} username: ${providers.gradleProperty("internalUsername").getOrNull()}")
           name = "internal"
-          url = url(providers.gradleProperty("internalUrl"))
+          url = uri(providers.gradleProperty("internalUrl"))
           credentials(PasswordCredentials)
         }
     }
