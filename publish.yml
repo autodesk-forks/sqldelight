@@ -23,7 +23,7 @@ jobs:
       - bash: export JAVA_HOME=/usr/lib/jvm/temurin-17-jdk-amd64 && source /etc/environment && java -version
         displayName: 'Set JAVA_HOME'
 
-      - bash: echo internalUsername:$ARTIFACTORY_USER >> ~/.gradle/gradle.properties
+      - bash: touch ~/.gradle/gradle.properties && echo internalUsername:$ARTIFACTORY_USER >> ~/.gradle/gradle.properties
       - bash: echo internalPassword:$ARTIFACTORY_PASSWORD >> ~/.gradle/gradle.properties
       - bash: echo internalUrl:$ARTIFACTORY_PUBLISH_URL >> ~/.gradle/gradle.properties
 
