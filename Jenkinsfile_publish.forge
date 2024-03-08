@@ -47,6 +47,8 @@ node("aws-centos") {
       }
     }
 
+    containerExec("git rev-parse --short HEAD")
+
     AcsStage("Download Jar") {
       containerExec("mkdir -p ~/.gradle && echo internalUsername:$ARTIFACTORY_USER >> ~/.gradle/gradle.properties")
       containerExec("echo internalPassword:$ARTIFACTORY_PASSWORD >> ~/.gradle/gradle.properties")
