@@ -47,7 +47,7 @@ node {
     }
 
     AcsStage("Download Jar") {
-      containerExec(DOCKER_ID, "./gradlew sqldelight-gradle-plugin:publishAllPublicationsToInternalRepository")
+      containerExec(DOCKER_ID, "./gradlew --no-daemon sqldelight-gradle-plugin:publishAllPublicationsToInternalRepository")
     }
   }
 }
