@@ -36,7 +36,6 @@ node("aws-centos") {
                   -e BUILD_USER \
                   -e ARTIFACTORY_USER \
                   -e ARTIFACTORY_PASSWORD \
-                  -e ARTIFACTORY_URL=$ARTIFACTORY_URL \
                   -itd \
                   --network host \
                   -v ${CURRENT_DIR}:/sqldelight \
