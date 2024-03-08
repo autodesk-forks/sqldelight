@@ -17,8 +17,11 @@ jobs:
       - bash: sudo apt install build-essential
         displayName: 'Install Linux build dependencies'
 
-      - bash: sudo update-java-alternatives --set /usr/lib/jvm/temurin-17-jdk-amd64
+      - bash: sudo update-java-alternatives --set /usr/lib/jvm/temurin-17-jdk-amd64 && java -version
         displayName: 'Set JDK 17 as default'
+
+      - bash: export JAVA_HOME=/usr/lib/jvm/temurin-17-jdk-amd64 && source /etc/environment && java -version
+        displayName: 'Set JAVA_HOME'
 
       - bash: ./gradlew -version
         displayName: 'Print the versions'
