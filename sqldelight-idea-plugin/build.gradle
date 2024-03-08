@@ -23,15 +23,6 @@ intellij {
       "com.intellij.java",
       "org.jetbrains.android"
   ]
-  if (!project.version.endsWith("SNAPSHOT")) {
-    tasks.named('patchPluginXml') {
-      changeNotes = (provider { changelog.get(project.version).toHTML() })
-    }
-  } else {
-    tasks.named('patchPluginXml') {
-      version = "$VERSION_NAME-${System.currentTimeMillis()}"
-    }
-  }
 }
 
 tasks.named('runIde') {
