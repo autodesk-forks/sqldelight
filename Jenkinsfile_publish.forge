@@ -23,7 +23,7 @@ node('aws-centos-2xlarge') {
     CURRENT_DIR = sh(returnStdout: true, script: "pwd").trim()
 
     AcsStage('Run Docker') {
-      DOCKER_TAG = sh(returnStdout: true, script: "docker build .")
+      DOCKER_TAG = sh(returnStdout: true, script: "docker build -t sqldelight_tag .")
       sh "echo DOCKER_TAG=${DOCKER_TAG}"
 
       DOCKER_ID = sh(returnStdout: true, script: "docker run \
@@ -38,7 +38,7 @@ node('aws-centos-2xlarge') {
                   -itd \
                   --network host \
                   -v ${CURRENT_DIR}:/sqldelight \
-                  -w /sqldelight $DOCKER_TAG"
+                  -w /sqldelight sqldelight_tag"
       ).trim()
 
       containerExec = { cmd ->
