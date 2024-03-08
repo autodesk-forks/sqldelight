@@ -6,7 +6,7 @@ package com.plangrid
 env.PROJECT_NAME = 'sqldelight'
 env.timeoutAmount = 90
 
-ARTIFACTORY_URL = "https://plangrid.jfrog.io/plangrid/libs-release/"
+ARTIFACTORY_URL = "https://plangrid.jfrog.io/plangrid/libs-release-local/"
 
 node("aws-centos") {
   withCredentials([
@@ -55,7 +55,7 @@ node("aws-centos") {
     containerExec("echo internalUrl:$ARTIFACTORY_URL >> ~/.gradle/gradle.properties")
 
     AcsStage("Publish sqldelight-gradle-plugin") {
-      containerExec("./gradlew --no-daemon sqldelight-gradle-plugin:publishAllPublicationsToInternalRepository")
+      containerExec("./gradlew --no-daemon publishAllPublicationsToInternalRepository")
     }
   }
 }
