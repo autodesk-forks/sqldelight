@@ -54,7 +54,7 @@ node("aws-centos") {
     containerExec("echo internalUrl:$ARTIFACTORY_URL >> ~/.gradle/gradle.properties")
 
     AcsStage("Publish sqldelight-gradle-plugin") {
-      containerExec("./gradlew --no-daemon publishAllPublicationsToInternalRepository")
+      containerExec("./gradlew --no-daemon sqldelight-gradle-plugin:publishAllPublicationsToInternalRepository")
     }
   }
 }
