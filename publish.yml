@@ -1,0 +1,82 @@
+# This pipeline exists in order to publish sqldelight for ios and android.
+# Builds for this should be queued manually.
+# New artifacts are placed in artifactory with the base version of the libraries with the build
+# number appended to the end.
+
+variables:
+  - group: artifactory-auth-2
+
+jobs:
+
+  ########################## LINUX ########################
+  - job: PublishLinux
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+
+      - bash: sudo apt install build-essential
+        displayName: 'Install Linux build dependencies'
+
+      - bash: sudo update-java-alternatives --set /usr/lib/jvm/temurin-17-jdk-amd64 && java -version
+        displayName: 'Set JDK 17 as default'
+
+      - bash: export JAVA_HOME=/usr/lib/jvm/temurin-17-jdk-amd64 && source /etc/environment && java -version
+        displayName: 'Set JAVA_HOME'
+
+      - bash: mkdir ~/.gradle && echo internalUsername:$ARTIFACTORY_USER >> ~/.gradle/gradle.properties
+      - bash: echo internalPassword:$ARTIFACTORY_PASSWORD >> ~/.gradle/gradle.properties
+      - bash: echo internalUrl:$ARTIFACTORY_PUBLISH_URL >> ~/.gradle/gradle.properties
+
+      - bash: java -version && echo $JAVA_HOME
+        displayName: 'Print Java version'
+        env:
+          JAVA_HOME: "/usr/lib/jvm/temurin-17-jdk-amd64"
+
+      - bash: ./gradlew -Dorg.gradle.java.home=$JAVA_HOME -version
+        displayName: 'Print the versions'
+        env:
+          JAVA_HOME: "/usr/lib/jvm/temurin-17-jdk-amd64"
+
+      - task: Gradle@2
+        inputs:
+          options: '--no-daemon'
+          tasks: 'assemble'
+        displayName: 'Assemble SqlDelight (Linux)'
+        env:
+          JAVA_HOME: "/usr/lib/jvm/temurin-17-jdk-amd64"
+          internalUsername: "$(ARTIFACTORY_USER)"
+          internalPassword: "$(ARTIFACTORY_PASSWORD)"
+          internalUrl: "$(ARTIFACTORY_PUBLISH_URL)"
+          PG_BUILD_NUMBER: "$(Build.BuildNumber)"
+          CI: "true"
+
+      - task: Gradle@2
+        inputs:
+          options: '--no-daemon'
+          tasks: 'publishAllPublicationsToInternalRepository'
+        displayName: 'Publish SqlDelight (Linux)'
+        env:
+          JAVA_HOME: "/usr/lib/jvm/temurin-17-jdk-amd64"
+          internalUsername: "$(ARTIFACTORY_USER)"
+          internalPassword: "$(ARTIFACTORY_PASSWORD)"
+          internalUrl: "$(ARTIFACTORY_PUBLISH_URL)"
+          PG_BUILD_NUMBER: "$(Build.BuildNumber)"
+          CI: "true"
+
+  ########################## MAC ########################
+#  - job: PublishMac
+#    pool:
+#      vmImage: 'macos-latest'
+#    steps:
+#
+#      - task: Gradle@2
+#        inputs:
+#          options: '--no-daemon'
+#          tasks: 'drivers:native-driver:publishIosX64PublicationToMavenRepository drivers:native-driver:publishIosArm64PublicationToMavenRepository runtime:publishIosArm64PublicationToMavenRepository runtime:publishIosX64PublicationToMavenRepository'
+#        displayName: 'Publish SqlDelight (Mac)'
+#        env:
+#          internalUsername: "$(ARTIFACTORY_USER)"
+#          internalPassword: "$(ARTIFACTORY_PASSWORD)"
+#          internalUrl: "$(ARTIFACTORY_PUBLISH_URL)"
+#          PG_BUILD_NUMBER: "$(Build.BuildNumber)"
+#          BUILD_HOST: "macos"
