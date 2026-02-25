@@ -18,13 +18,13 @@ node("aws-centos") {
     ],
   ]) {
     def DOCKER_ID = null
-    AcsStage("SCM") {
+    stage("SCM") {
       checkout scm
     }
     currentBuild.result = "SUCCESS"
     CURRENT_DIR = sh(returnStdout: true, script: "pwd").trim()
 
-    AcsStage('Run Docker') {
+    stage('Run Docker') {
       DOCKER_TAG = sh(returnStdout: true, script: "docker build -t sqldelight_tag .")
       sh "echo DOCKER_TAG=${DOCKER_TAG}"
 
@@ -53,7 +53,7 @@ node("aws-centos") {
     containerExec("echo internalPassword:$ARTIFACTORY_PASSWORD >> ~/.gradle/gradle.properties")
     containerExec("echo internalUrl:$ARTIFACTORY_URL >> ~/.gradle/gradle.properties")
 
-    AcsStage("Publish all publications to internal repository") {
+    stage("Publish all publications to internal repository") {
       containerExec("./gradlew --no-daemon publishAllPublicationsToInternalRepository")
     }
   }
